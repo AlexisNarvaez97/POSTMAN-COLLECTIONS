@@ -1,0 +1,412 @@
+{
+	"info": {
+		"_postman_id": "fcf55c37-8b48-4fad-8e90-a04e63e7cfa7",
+		"name": "Github",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET REPOS USER",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/user/repos",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"user",
+						"repos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE REPOSITORY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let { name, owner: { login } } = pm.response.json();\r",
+							"pm.globals.set(\"owner\", login);\r",
+							"pm.globals.set(\"name_repository\", name);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const number = getNumberRandom();\r",
+							"\r",
+							"pm.globals.set(\"boardName\", `Prueba API POSTMAN ${number}`);\r",
+							"\r",
+							"\r",
+							"function getNumberRandom() {\r",
+							"    return parseInt(Math.random() * 1000);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{boardName}}\",\r\n    \"description\": \"Creando un repo desde las apis de github\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/user/repos",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"user",
+						"repos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET REPOSITORY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/{{owner}}/{{name_repository}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"{{owner}}",
+						"{{name_repository}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE ISSUE GITHUB",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const { number, title } = pm.response.json();\r",
+							"\r",
+							"pm.globals.set(\"issue_number\", number);\r",
+							"pm.globals.set(\"issue_name\", title);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Creación de un issue desde postman 2\",\r\n    \"body\": \"Este es el contenido de este issue 2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/{{owner}}/{{name_repository}}/issues",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"{{owner}}",
+						"{{name_repository}}",
+						"issues"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET A ISSUE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Same title issue\", function () {\r",
+							"    const titleIssue = pm.globals.get(\"issue_name\");\r",
+							"    const { title } = pm.response.json();\r",
+							"    pm.expect(title).to.eql(titleIssue);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/{{owner}}/{{name_repository}}/issues/{{issue_number}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"{{owner}}",
+						"{{name_repository}}",
+						"issues",
+						"{{issue_number}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE REPOSITORY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Repository DELETE\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Prueba API POSTMAN 3\",\r\n    \"description\": \"Creando un repo desde las apis de github\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.github.com/repos/{{owner}}/{{name_repository}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"{{owner}}",
+						"{{name_repository}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET REPOSITORY NOT FOUND",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Repositorio no encontrado\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{postman_token}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{postman_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.github.com/repos/{{owner}}/{{name_repository}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"github",
+						"com"
+					],
+					"path": [
+						"repos",
+						"{{owner}}",
+						"{{name_repository}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
